@@ -4,9 +4,14 @@ import 'package:aplication_teo/pages/opciones.dart';
 
 import 'package:flutter/material.dart';
 
+import '../services/local_storage.dart';
+
 class NavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final nombre = LocalStorage.prefs.getString("nombre");
+    final apellidoPaterno = LocalStorage.prefs.getString("apellidoPaterno");
+    final apellidoMaterno = LocalStorage.prefs.getString("apellidoMaterno");
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -25,7 +30,7 @@ class NavBar extends StatelessWidget {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                InfoCard(name: "Teodora De La Cruz López", rol: "Paciente"),
+                InfoCard(name: "$nombre $apellidoPaterno $apellidoMaterno", rol: "Paciente"),
                 opciones()
               ],
             ),
@@ -36,7 +41,7 @@ class NavBar extends StatelessWidget {
           color: Colors.white,
           child: Column(
             children: <Widget>[
-              cabecera_welcome(),
+              cabecera_welcome(nombre ?? "", apellidoPaterno ?? ""),
               cabeceraSaludo(),
               Expanded(child: gridOpciones()),
               // SizedBox(
@@ -58,11 +63,11 @@ class NavBar extends StatelessWidget {
     );
   }
 
-  Padding cabecera_welcome() {
+  Padding cabecera_welcome(String nombre, String apellidoPaterno ) {
     return Padding(
       padding: const EdgeInsets.only(top: 18.0),
       child: Text(
-        "Bienvenida Teodora De La Cruz",
+        "Bienvenido(a) $nombre $apellidoPaterno",
         style: TextStyle(
             fontSize: 28,
             color: Color.fromARGB(255, 11, 6, 156),

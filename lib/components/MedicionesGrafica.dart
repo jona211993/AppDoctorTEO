@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/date_symbol_data_local.dart';
 import '../components/URL.dart';
 
+import '../services/local_storage.dart';
 import 'boton_aceptar.dart';
 
 class LineChartSample2 extends StatefulWidget {
@@ -22,7 +23,6 @@ class _MedicionesGrafica extends State<LineChartSample2> {
   final _glucoseController = TextEditingController();
   final _commentController = TextEditingController();
   var URL=myHost.url;
-  var ID_PACIENTE='649a1f5c58ac0deb48135625';
   List<String> months = [
     'Enero',
     'Febrero',
@@ -48,7 +48,8 @@ class _MedicionesGrafica extends State<LineChartSample2> {
   }
 
   Future refrescarPaginaGlucosa() async {
-    Uri uri = Uri.parse(URL+'/api/glucosa/obtenerMediciones/'+ID_PACIENTE);
+    final id = LocalStorage.prefs.getString("id") ?? "";
+    Uri uri = Uri.parse(URL+'/api/glucosa/obtenerMediciones/'+id);
     final response = await http.get(uri);
     Map<String, dynamic> jsonRespuesta = json.decode(response.body);
     List<dynamic> body = jsonRespuesta['data'];
@@ -85,9 +86,10 @@ class _MedicionesGrafica extends State<LineChartSample2> {
         backgroundColor: Color.fromARGB(255, 191, 22, 10),
         actions: <Widget>[
           Container(
+            padding: EdgeInsets.only(left: 20),
             color: Color.fromARGB(255, 53, 51, 51),
             child: DropdownButton(
-              padding: const EdgeInsets.only(left: 20),
+              
               underline: SizedBox(),
               value: selectedMonth,
               iconEnabledColor: Color.fromARGB(255, 23, 22, 22),
@@ -154,10 +156,10 @@ class _MedicionesGrafica extends State<LineChartSample2> {
                       // Guardar los datos ingresados
                       var glucose = int.tryParse(_glucoseController.text);
                       var comment = _commentController.text;
-                      var id = ID_PACIENTE;
+                      
                       if (glucose != null && glucose >= 1 && glucose <= 500) {
                         Navigator.of(context).pop();
-                        registrarGlucosa(id, glucose, comment, context);
+                        registrarGlucosa( glucose, comment, context);
                       } else {
                         // El valor ingresado no es válido
                         showDialog(

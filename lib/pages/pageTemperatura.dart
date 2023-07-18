@@ -8,9 +8,9 @@ import '../API/api_service.dart';
 import '../components/boton_aceptar.dart';
 import '../models/medicionTemperatura.dart';
 import '../components/URL.dart';
+import '../services/local_storage.dart';
 
 const String apiUrl = myHost.url;
-var ID_PACIENTE = '649a1f5c58ac0deb48135625';
 
 class HomePageTemperatura extends StatefulWidget {
   const HomePageTemperatura({Key? key}) : super(key: key);
@@ -23,7 +23,8 @@ class _HomePageTemperaturaState extends State<HomePageTemperatura> {
   
   late Future<List<MedidaTemp>> mediciones;
   late Future<Widget> listado;
-  final url = '$apiUrl/api/temperatura/obtenerMediciones/' + ID_PACIENTE;
+  final id = LocalStorage.prefs.getString("id") ?? "";
+  
   var MES_ELEGIDO = DateTime.now().month;
   final _temperaturaController = TextEditingController();
   final _comentarioController = TextEditingController();
@@ -32,7 +33,8 @@ class _HomePageTemperaturaState extends State<HomePageTemperatura> {
   late Widget l = Container();
 
   Future<List<MedidaTemp>> getMediciones() async {
-    http.Response response = await http.get(Uri.parse(url));
+    final url = '$apiUrl/api/temperatura/obtenerMediciones/' ;
+    http.Response response = await http.get(Uri.parse(url + id));
     List<MedidaTemp> listTemp = [];
     final data = json.decode(response.body);
     setState(() {
@@ -227,13 +229,13 @@ class _HomePageTemperaturaState extends State<HomePageTemperatura> {
                         var temperatura =
                             double.tryParse(_temperaturaController.text);
                         var comment = _comentarioController.text;
-                        var id = ID_PACIENTE;
+                        
                         if (temperatura != null &&
                             temperatura >= 1 &&
                             temperatura <= 40) {
                           Navigator.of(context).pop();
                           registrarTemperatura(
-                              id, temperatura, comment, context);
+                               temperatura, comment, context);
                         } else {
                           // El valor ingresado no es válido
                           showDialog(

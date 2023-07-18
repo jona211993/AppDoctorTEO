@@ -7,9 +7,9 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:http/http.dart' as http;
 import '../components/URL.dart';
 import '../components/boton_aceptar.dart';
+import '../services/local_storage.dart';
 
 const String apiUrl = myHost.url;
-var ID_PACIENTE = '649a1f5c58ac0deb48135625';
 
 class HomePageOximetria extends StatefulWidget {
   const HomePageOximetria({Key? key}) : super(key: key);
@@ -21,7 +21,8 @@ class HomePageOximetria extends StatefulWidget {
 class _HomePageOximetriaState extends State<HomePageOximetria> {
   late Future<List<MedidaOximetria>> mediciones;
   late Future<Widget> listado;
-  final url = '$apiUrl/api/oximetria/obtenerMediciones/' + ID_PACIENTE;
+  final id = LocalStorage.prefs.getString("id") ?? "";
+  
   var MES_ELEGIDO = DateTime.now().month;
   final _temperaturaController = TextEditingController();
   final _comentarioController = TextEditingController();
@@ -30,7 +31,8 @@ class _HomePageOximetriaState extends State<HomePageOximetria> {
   late Widget l = Container();
 
   Future<List<MedidaOximetria>> getMediciones() async {
-    http.Response response = await http.get(Uri.parse(url));
+    final url = '$apiUrl/api/oximetria/obtenerMediciones/';
+    http.Response response = await http.get(Uri.parse(url + id));
     List<MedidaOximetria> listTemp = [];
     final data = json.decode(response.body);
     setState(() {
@@ -223,13 +225,13 @@ class _HomePageOximetriaState extends State<HomePageOximetria> {
                         var saturacion =
                             int.tryParse(_temperaturaController.text);
                         var comment = _comentarioController.text;
-                        var id = ID_PACIENTE;
+                        
                         if (saturacion != null &&
                             saturacion >= 0 &&
                             saturacion <= 100) {
                           Navigator.of(context).pop();
                           registrarOximetria(
-                              id, saturacion, comment, context);
+                               saturacion, comment, context);
                         } else {
                           // El valor ingresado no es válido
                           showDialog(

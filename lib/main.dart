@@ -1,14 +1,19 @@
+import 'package:aplication_teo/API/auth_service.dart';
 import 'package:aplication_teo/pages/logn.dart';
 import 'package:aplication_teo/pages/navBar.dart';
 import 'package:aplication_teo/pages/pageHomeGlucosa.dart';
 import 'package:aplication_teo/pages/side_menu.dart';
+import 'package:aplication_teo/services/local_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:aplication_teo/constant.dart';
 
 import 'components/MedicionesGrafica.dart';
 
-void main() {
-  runApp(const MyApp());
+void main()  {
+  WidgetsFlutterBinding.ensureInitialized();
+  LocalStorage.configurePrefs().then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -25,7 +30,7 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity                
       ),
       // home: NavBar(),
-      home:LoginPage(),
+      home: (AuthService().isAuthenticated()) ? NavBar() :LoginPage(),
     );
   }
 }

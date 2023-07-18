@@ -1,35 +1,48 @@
+import 'package:aplication_teo/API/auth_service.dart';
 import 'package:aplication_teo/pages/navBar.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatelessWidget {
-  Widget createEmailInput() {
+class LoginPage extends StatefulWidget {
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  Widget createEmailInput(Function onChanged) {
     return Padding(
       padding: const EdgeInsets.only(top: 25),
       child: TextFormField(
-        decoration: InputDecoration(hintText: "Usuario o Correo electrónico"),
+        onChanged: (value) => onChanged(value),
+        decoration: InputDecoration(hintText: "Correo electrónico"),
       ),
     );
   }
 
-  Widget createPassword() {
+  Widget createPassword(Function onChanged) {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
       child: TextFormField(
+        onChanged: (value) => onChanged(value),
         decoration: InputDecoration(hintText: "Contraseña"),
         obscureText: true,
       ),
     );
   }
 
-  Widget createLoginButton(context) {
+  Widget createLoginButton(context, String email, String password) {
     return Container(
         padding: const EdgeInsets.only(top: 42),
         child: Center(          
             child: GestureDetector(
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => NavBar()
-        )
-        ),
+              onTap: () async {
+                final isLogin = AuthService().loginService(email, password);
+                if ( isLogin == true) {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => NavBar()));
+                }else{
+                  //Agregar Alert o PopUp para mostrar error de autenticacion
+                  print("Error credenciales incorrectas ");
+                }
+              },
               child: Container(
                 height: 50,
                 width: 250,
@@ -66,8 +79,11 @@ class LoginPage extends StatelessWidget {
           )
         );
  }
+
   @override
   Widget build(BuildContext context) {
+    String email = "";
+    String password = "";
     return Scaffold(
         body: Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
@@ -79,9 +95,43 @@ class LoginPage extends StatelessWidget {
           height: 400,
         ),
         createTitle(),
-        createEmailInput(),
-        createPassword(),
-        createLoginButton(context),
+        createEmailInput((value) => email = value),
+        createPassword((value) => password = value),
+        Container(
+        padding: const EdgeInsets.only(top: 42),
+        child: Center(          
+            child: GestureDetector(
+              onTap: () async {
+                final isLogin = await AuthService().loginService(email, password);
+                print(isLogin);
+                if ( isLogin == true) {
+                  print("Login correcto");
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => NavBar()));
+                }else{
+                  //Agregar Alert o PopUp para mostrar error de autenticacion
+                  print("Error credenciales incorrectas ");
+                }
+              },
+              child: Container(
+                height: 50,
+                width: 250,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Text(
+                    "Iniciar Sesión",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
+                  ),
+                ),
+              ),
+            ),          
+        )
+        )
       ]),
     ));
   }

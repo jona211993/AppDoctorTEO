@@ -8,9 +8,9 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:http/http.dart' as http;
 import '../components/URL.dart';
 import '../components/boton_aceptar.dart';
+import '../services/local_storage.dart';
 
 const String apiUrl = myHost.url;
-var ID_PACIENTE = '649a1f5c58ac0deb48135625';
 
 class HomePageFrecuencia extends StatefulWidget {
   const HomePageFrecuencia({Key? key}) : super(key: key);
@@ -20,9 +20,10 @@ class HomePageFrecuencia extends StatefulWidget {
 }
 
 class _HomePageFrecuenciaState extends State<HomePageFrecuencia> {
+  
   late Future<List<MedidaFrecuencia>> mediciones;
   late Future<Widget> listado;
-  final url = '$apiUrl/api/frecuenciaC/obtenerMediciones/' + ID_PACIENTE;
+  final url = '$apiUrl/api/frecuenciaC/obtenerMediciones/';
   var MES_ELEGIDO = DateTime.now().month;
   final _bpmController = TextEditingController();
   final _comentarioController = TextEditingController();
@@ -31,7 +32,8 @@ class _HomePageFrecuenciaState extends State<HomePageFrecuencia> {
   late Widget l = Container();
 
   Future<List<MedidaFrecuencia>> getMediciones() async {
-    http.Response response = await http.get(Uri.parse(url));
+    final id = LocalStorage.prefs.getString("id") ?? "";
+    http.Response response = await http.get(Uri.parse(url+id));
     List<MedidaFrecuencia> listTemp = [];
     final data = json.decode(response.body);
     setState(() {
@@ -224,13 +226,12 @@ class _HomePageFrecuenciaState extends State<HomePageFrecuencia> {
                         var valorBpm =
                             int.tryParse(_bpmController.text);
                         var comment = _comentarioController.text;
-                        var id = ID_PACIENTE;
                         if (valorBpm != null &&
                             valorBpm >= 0 &&
                             valorBpm <= 100) {
                           Navigator.of(context).pop();
                           registrarFrecuencia(
-                              id, valorBpm, comment, context);
+                               valorBpm, comment, context);
                         } else {
                           // El valor ingresado no es válido
                           showDialog(

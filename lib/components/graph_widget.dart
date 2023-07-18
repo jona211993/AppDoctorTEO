@@ -166,6 +166,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
           break;
         case 26:
           text =Center(child: const Text('26', style: style));
+           break;
         case 27:
           text = Center(child: const Text('27', style: style));
           break;
@@ -174,6 +175,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
           break;
         case 29:
           text =Center(child: const Text('29', style: style));
+           break;
         case 30:
           text = Center(child: const Text('30', style: style));
           break;

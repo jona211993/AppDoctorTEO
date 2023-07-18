@@ -1,3 +1,4 @@
+import 'package:aplication_teo/API/auth_service.dart';
 import 'package:aplication_teo/pages/logn.dart';
 import 'package:aplication_teo/pages/navBar.dart';
 import 'package:aplication_teo/pages/page.config.dart';
@@ -156,6 +157,7 @@ void selectedItem(BuildContext context, int index) {
         ));
         break;
         case 5:
+        AuthService().logout();
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => LoginPage(),
         ));

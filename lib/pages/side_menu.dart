@@ -1,5 +1,6 @@
 import 'package:aplication_teo/pages/info_card.dart';
 import 'package:aplication_teo/pages/opciones.dart';
+import 'package:aplication_teo/services/local_storage.dart';
 import 'package:flutter/material.dart';
 
 class SideMenu extends StatefulWidget {
@@ -12,6 +13,9 @@ class SideMenu extends StatefulWidget {
 class _SideMenuState extends State<SideMenu> {
   @override
   Widget build(BuildContext context) {
+    final nombre = LocalStorage.prefs.getString("nombre");
+    final apellidoPaterno = LocalStorage.prefs.getString("apellidoPaterno");
+    final apellidoMaterno = LocalStorage.prefs.getString("apellidoMaterno");
     return Scaffold(
         body: Container(
             width: 288,
@@ -20,7 +24,7 @@ class _SideMenuState extends State<SideMenu> {
             child: SafeArea(
               child: Column(
                 children: [
-                  InfoCard(name: "Teodora De La Cruz López", rol: "Paciente"),
+                  InfoCard(name: "$nombre $apellidoPaterno $apellidoMaterno", rol: "Paciente"),
                   opciones()
                 ],
               ),

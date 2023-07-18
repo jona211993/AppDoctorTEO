@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:aplication_teo/services/local_storage.dart';
 import 'package:http/http.dart' as http;
 import '../components/graph_widget.dart';
 import '../components/URL.dart';
@@ -6,11 +7,11 @@ import '../components/URL.dart';
 
 //Defino mi host de mi server en la nube
 const String apiUrl = myHost.url;
-var ID_PACIENTE='649a1f5c58ac0deb48135625';
 
 // ---- PARA los POSTS -----
 Future<void> registrarGlucosa(
-    String id, int glucose, String comment, context) async {
+     int glucose, String comment, context) async {
+  final id = LocalStorage.prefs.getString("id") ?? "";
   final response = await http.post(
     Uri.parse('$apiUrl/api/glucosa/registrarMedicion'),
     headers: <String, String>{
@@ -32,7 +33,8 @@ Future<void> registrarGlucosa(
   }
 }
 
-Future<void> registrarTemperatura(String id, double valorTemp, String comment, context) async {
+Future<void> registrarTemperatura( double valorTemp, String comment, context) async {
+  final id = LocalStorage.prefs.getString("id") ?? "";
   try {
     final response = await http.post(
       Uri.parse('$apiUrl/api/temperatura/registrarMedicion'),
@@ -60,7 +62,8 @@ Future<void> registrarTemperatura(String id, double valorTemp, String comment, c
   }
 }
 
-Future<void> registrarOximetria(String id, int valorSaturacion, String comment, context) async {
+Future<void> registrarOximetria( int valorSaturacion, String comment, context) async {
+  final id = LocalStorage.prefs.getString("id") ?? "";
   try {
     final response = await http.post(
       Uri.parse('$apiUrl/api/oximetria/registrarMedicion'),
@@ -88,7 +91,8 @@ Future<void> registrarOximetria(String id, int valorSaturacion, String comment, 
   }
 }
 
-Future<void> registrarFrecuencia(String id, int valor, String comment, context) async {
+Future<void> registrarFrecuencia( int valor, String comment, context) async {
+  final id = LocalStorage.prefs.getString("id") ?? "";
   try {
     final response = await http.post(
       Uri.parse('$apiUrl/api/frecienciaC/registrarMedicion'),

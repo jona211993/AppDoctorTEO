@@ -8,9 +8,9 @@ import 'package:percent_indicator/percent_indicator.dart';
 import '../API/api_service.dart';
 import '../components/boton_aceptar.dart';
 import '../components/URL.dart';
+import '../services/local_storage.dart';
 
 const String apiUrl = myHost.url;
-var ID_PACIENTE = '649a1f5c58ac0deb48135625';
 
 class HomePagePeso extends StatefulWidget {
   const HomePagePeso({Key? key}) : super(key: key);
@@ -23,7 +23,8 @@ class _HomePagePesoState extends State<HomePagePeso> {
   
   late Future<List<MedidaPeso>> mediciones;
   late Future<Widget> listado;
-  final url = '$apiUrl/api/peso/obtenerMediciones/' + ID_PACIENTE;
+  final id = LocalStorage.prefs.getString("id") ?? "";
+  
   var MES_ELEGIDO = DateTime.now().month;
   final _temperaturaController = TextEditingController();
   final _comentarioController = TextEditingController();
@@ -32,7 +33,8 @@ class _HomePagePesoState extends State<HomePagePeso> {
   late Widget l = Container();
 
   Future<List<MedidaPeso>> getMediciones() async {
-    http.Response response = await http.get(Uri.parse(url));
+    final url = '$apiUrl/api/peso/obtenerMediciones/';
+    http.Response response = await http.get(Uri.parse(url + id));
     List<MedidaPeso> listTemp = [];
     final data = json.decode(response.body);
     setState(() {
@@ -227,13 +229,13 @@ class _HomePagePesoState extends State<HomePagePeso> {
                         var temperatura =
                             double.tryParse(_temperaturaController.text);
                         var comment = _comentarioController.text;
-                        var id = ID_PACIENTE;
+                        
                         if (temperatura != null &&
                             temperatura >= 1 &&
                             temperatura <= 40) {
                           Navigator.of(context).pop();
                           registrarTemperatura(
-                              id, temperatura, comment, context);
+                               temperatura, comment, context);
                         } else {
                           // El valor ingresado no es válido
                           showDialog(
