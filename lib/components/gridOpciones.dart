@@ -515,7 +515,7 @@ Card CardNutricion() {
         break;
        case 7:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => InsulinAdminPage(),
+          builder: (context) => HomePageFrecuencia(),
         ));
         break;
     }
